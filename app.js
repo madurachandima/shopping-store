@@ -13,20 +13,20 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.set('view engine','pug')
+app.set('view engine', 'pug')
 // if we rename views filter to "screens" this should be change like this
- // app.set('views','screens') 
- 
-app.set('views','views')
+// app.set('views','screens') 
+
+app.set('views', 'views')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/admin',adminRoutes);
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 app.use('/', (req, res, next) => {
-    res.status(404). sendFile(path.join(__dirname,'views', 'page-not-found.html'));
+    res.status(404).render('page-not-found', { doctTitle: "Page Not Found" })
 });
 
 
