@@ -15,7 +15,7 @@ router.get("/", (req, res, next) => {
     // we dont use file extention like .pub becase in app js folder
     // alreday set the default render file type is pub
 
-    res.render('shop', { prods: products, doctTitle: "Shop" })
+    res.render('shop', { prods: products, pageTitle: "Shop", path: "/" ,})
 })
 
 export { router };

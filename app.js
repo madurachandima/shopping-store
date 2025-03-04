@@ -26,7 +26,7 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 app.use('/', (req, res, next) => {
-    res.status(404).render('page-not-found', { doctTitle: "Page Not Found" })
+    res.status(404).render('page-not-found', { pageTitle: "Page Not Found", })
 });
 
 
