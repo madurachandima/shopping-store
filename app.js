@@ -2,10 +2,13 @@ import express from "express";
 import bodyParser from "body-parser";
 import path from 'path';
 
+
 import { fileURLToPath } from 'url';
+import { engine } from 'express-handlebars';
 
 import { router as adminRoutes } from './routes/admin.js';
 import { router as shopRoutes } from './routes/shop.js';
+
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,7 +16,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.set('view engine', 'pug')
+app.engine('handlebars', engine()); 
+app.set('view engine', 'handlebars');
+
+// app.set('view engine', 'pug')
 // if we rename views filter to "screens" this should be change like this
 // app.set('views','screens') 
 
