@@ -16,10 +16,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.engine('handlebars', engine()); 
-app.set('view engine', 'handlebars');
 
-// app.set('view engine', 'pug')
+
+app.set('view engine', 'ejs')
 // if we rename views filter to "screens" this should be change like this
 // app.set('views','screens') 
 
