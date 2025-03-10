@@ -4,10 +4,12 @@ import path from 'path';
 
 
 import { fileURLToPath } from 'url';
-import { engine } from 'express-handlebars';
+
 
 import { router as adminRoutes } from './routes/admin.js';
 import { router as shopRoutes } from './routes/shop.js';
+
+import { pageNotFound } from './controllers/error_controller.js'
 
 
 
@@ -30,9 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-app.use('/', (req, res, next) => {
-    res.status(404).render('page-not-found', { pageTitle: "Page Not Found", })
-});
+app.use('/', pageNotFound);
 
 
 
