@@ -6,18 +6,22 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// const products = [];
+const PRODUCTS_FILE_PATH = path.join(__dirname, 'data', 'products.json');
 
 class Product {
-    constructor(title,) {
-        this.title = title
+    constructor(title, imageUrl, description, price) {
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.description = description;
+        this.price = price;
+
     }
 
 
     getPath = () => path.join(__dirname, 'data', 'products.json');
 
     save() {
-        const p = this.getPath();
+        const p = PRODUCTS_FILE_PATH;
 
         fs.mkdir(path.dirname(p), { recursive: true }, (err) => {
             if (err) {
@@ -63,7 +67,7 @@ class Product {
     }
 
     static fetchAll(cb) {
-        const p = this.getPath();
+        const p = PRODUCTS_FILE_PATH;
 
         fs.readFile(p, (err, fileContent) => {
             console.log(fileContent);
