@@ -21,6 +21,7 @@ class Product {
     getPath = () => path.join(__dirname, 'data', 'products.json');
 
     save() {
+        this.id = Math.random().toString();
         const p = PRODUCTS_FILE_PATH;
 
         fs.mkdir(path.dirname(p), { recursive: true }, (err) => {
@@ -66,7 +67,7 @@ class Product {
 
     }
 
-    static fetchAll(cb) {
+    static getAllProducts(cb) {
         const p = PRODUCTS_FILE_PATH;
 
         fs.readFile(p, (err, fileContent) => {
@@ -78,7 +79,22 @@ class Product {
             cb(JSON.parse(fileContent));
 
         });
+    }
 
+    static fetchAll(cb) {
+        Product.getAllProducts(res => {
+            cb(res);
+        });
+
+    }
+
+
+
+    static findById(id, cb) {
+        Product.getAllProducts(products => {
+            const product = products.find(p => p.id === id);
+            cb(product);
+        });
 
     }
 
