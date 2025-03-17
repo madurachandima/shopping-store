@@ -9,7 +9,8 @@ const __dirname = path.dirname(__filename);
 const PRODUCTS_FILE_PATH = path.join(__dirname, 'data', 'products.json');
 
 class Product {
-    constructor(title, imageUrl, description, price) {
+    constructor(id, title, imageUrl, description, price) {
+        this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -21,7 +22,7 @@ class Product {
     getPath = () => path.join(__dirname, 'data', 'products.json');
 
     save() {
-        this.id = Math.random().toString();
+
         const p = PRODUCTS_FILE_PATH;
 
         fs.mkdir(path.dirname(p), { recursive: true }, (err) => {
@@ -48,17 +49,32 @@ class Product {
                     }
                 }
 
+                if (this.id) {
+                    const exisitngProductIndex = products.findIndex(prod => prod.id === this.id);
+                    const updatedProducts = [...products];
+                    updatedProducts[exisitngProductIndex] = this;
 
-                products.push(this);
 
+                    fs.writeFile(p, JSON.stringify(updatedProducts, null, 2), (err) => {
+                        if (err) {
+                            console.error("Write error:", err);
+                        } else {
+                            console.log("File updated successfully!");
+                        }
+                    });
+                } else {
+                    this.id = Math.random().toString();
+                    products.push(this);
 
-                fs.writeFile(p, JSON.stringify(products, null, 2), (err) => {
-                    if (err) {
-                        console.error("Write error:", err);
-                    } else {
-                        console.log("File updated successfully!");
-                    }
-                });
+                    fs.writeFile(p, JSON.stringify(products, null, 2), (err) => {
+                        if (err) {
+                            console.error("Write error:", err);
+                        } else {
+                            console.log("File updated successfully!");
+                        }
+                    });
+                }
+
             });
         });
 
