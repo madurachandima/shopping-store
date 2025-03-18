@@ -56,4 +56,25 @@ const getProducts = (req, res, next) => {
 
 };
 
-export { getAddProduct, postAddProduct, getProducts, getEditProductById, postEditProduct };
+const deleteProductById = (req, res, next) => {
+
+    const prodId = req.body.productId;
+
+
+
+    Product.findById(prodId, (
+        product
+    ) => {
+        if (!product) {
+            return res.redirect("/admin/products");
+        }
+
+        Product.deleteById(prodId, response => {
+            res.redirect("/admin/products",);
+        });
+
+    });
+
+};
+
+export { getAddProduct, postAddProduct, getProducts, getEditProductById, postEditProduct, deleteProductById };

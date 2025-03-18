@@ -104,14 +104,30 @@ class Product {
 
     }
 
-
-
     static findById(id, cb) {
         Product.getAllProducts(products => {
             const product = products.find(p => p.id === id);
             cb(product);
         });
 
+    }
+
+    static deleteById(id, cb) {
+
+        const p = PRODUCTS_FILE_PATH;
+
+        Product.getAllProducts(products => {
+            const updatedProducts = products.filter(p => p.id !== id);
+            fs.writeFile(p, JSON.stringify(updatedProducts, null, 2), (err) => {
+                if (err) {
+                    console.error("Write error:", err);
+                } else {
+                    console.log("File updated successfully!");
+                }
+                cb();
+            });
+           
+        });
     }
 
 
