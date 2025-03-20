@@ -1,13 +1,4 @@
 {
-  "products": [
-    {
-      "id": "0.0691408471924777",
-      "qty": 2
-    },
-    {
-      "id": "sdsdsd3s",
-      "qty": 1
-    }
-  ],
-  "totalPrice": 1912
+  "products": [],
+  "totalPrice": 0
 }

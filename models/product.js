@@ -3,6 +3,8 @@ import path from 'path';
 
 import { fileURLToPath } from 'url';
 
+import { Cart } from './cart.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -117,16 +119,21 @@ class Product {
         const p = PRODUCTS_FILE_PATH;
 
         Product.getAllProducts(products => {
+            const product = products.find(p => p.id === id);
             const updatedProducts = products.filter(p => p.id !== id);
             fs.writeFile(p, JSON.stringify(updatedProducts, null, 2), (err) => {
                 if (err) {
                     console.error("Write error:", err);
                 } else {
+                    Cart.deleteCartProductById(id, product.price, () => {
+                        cb();
+                    });
                     console.log("File updated successfully!");
+
                 }
-                cb();
+
             });
-           
+
         });
     }
 
