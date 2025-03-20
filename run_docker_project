@@ -1,0 +1,22 @@
+!imported node-docker-sample is your project name
+
+// if you do some changes to docker file first need to build it
+docker build -t node-docker-sample .
+
+// create docker container
+docker run -p 3000:3000 node-docker-sample
+
+==============================================
+
+// if you stop the docker contaninrer use this for re run it
+
+# List all containers (including stopped ones)
+docker ps -a  
+
+#
+docker start -a <container_id_or_name>
+
+
+
+
+
