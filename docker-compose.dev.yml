@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  node-app:
+    build: .  # This ensures Docker builds the image using Dockerfile
+    container_name: shopping_store
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules  # Prevents overwriting node_modules
+    ports:
+      - "3000:3000"  # Adjust port if necessary
+    command: ["npm", "run", "start"]  # Runs "nodemon app.js"
+    environment:
+      - NODE_ENV=development

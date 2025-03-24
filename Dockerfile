@@ -1,20 +1,20 @@
 # Use official Node.js image
 FROM node:20
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json first
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy application files
+# Copy the rest of the project files
 COPY . .
 
-# Expose port
+# Expose port 3000 (or the port you use in Express)
 EXPOSE 3000
 
-# Run the app
-CMD ["npm", "start"]
+# Start the app using nodemon
+CMD ["npx", "nodemon", "app.js"]

@@ -18,5 +18,7 @@ docker start -a <container_id_or_name>
 
 
 
+docker build -t shopping-store .
 
+docker run -p 3000:3000 shopping-store
 
