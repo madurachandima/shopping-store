@@ -95,7 +95,7 @@ class Cart {
 
 
             updatedCart.products = updatedCart.products.filter(prod => prod.id !== id);
-            
+
             updatedCart.totalPrice = updatedCart.totalPrice - productPrice * productQty;
             console.log("updatedCart found --->>>> " + updatedCart);
 
@@ -109,6 +109,23 @@ class Cart {
                 }
             });
         });
+    }
+
+    static getCart(cb) {
+        const p = PRODUCTS_FILE_PATH;
+
+        fs.readFile(p, (err, fileContent) => {
+            console.log(fileContent);
+            console.log("call get cart -->>>> " + fileContent);
+            if (err) {
+                cb([]);
+            } else {
+                cb(JSON.parse(fileContent));
+            }
+
+
+        });
+
     }
 }
 

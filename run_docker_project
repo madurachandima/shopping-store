@@ -22,3 +22,10 @@ docker build -t shopping-store .
 
 docker run -p 3000:3000 shopping-store
 
+
+
+docker-compose -f docker-compose.dev.yml down -v  # Stop and remove volumes
+docker-compose -f docker-compose.dev.yml build --no-cache  # Rebuild the image
+docker-compose -f docker-compose.dev.yml up  # Start fresh
+
+
