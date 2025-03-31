@@ -2,24 +2,31 @@ import { Product } from "../models/product.js";
 import { Cart } from "../models/cart.js"
 
 const getProducts = (req, res, next) => {
-    Product.fetchAll((products) => {
-        res.render('shop/product_list', { prods: products, pageTitle: "All Products", path: "/shop/products", })
+    Product.fetchAll().then(([rows, fieldData]) => {
+        res.render('shop/product_list', { prods: rows, pageTitle: "All Products", path: "/shop/products", })
+    }).catch(error => {
+        console.log(error);
     });
+
 };
 
 const getProductByProductId = (req, res, next) => {
     const prodId = req.params.productId;
-    Product.findById(prodId, (
-        product
-    ) => {
-        res.render('shop/product-details', { product: product, pageTitle: "Product Details", path: "/shop/products", })
-    });
+    Product.findById(prodId)
+        .then(([rows, fieldData]) => {
+            res.render('shop/product-details', { product: rows[0], pageTitle: "Product Details", path: "/shop/products", })
+        })
+        .catch(error => console.log(error));
 };
 
 const getIndex = (req, res, next) => {
-    Product.fetchAll((products) => {
-        res.render('shop/index', { prods: products, pageTitle: "Index", path: "/", })
+
+    Product.fetchAll().then(([rows, fieldData]) => {
+        res.render('shop/index', { prods: rows, pageTitle: "Index", path: "/", });
+    }).catch(error => {
+        console.log(error);
     });
+
 };
 
 const getCart = (req, res, next) => {
@@ -28,7 +35,7 @@ const getCart = (req, res, next) => {
         Product.fetchAll((products) => {
             for (var product of products) {
                 const cartProductData = cart.products.find(cartProd => cartProd.id === product.id);
-                console.log("cartProductData ----.>>>>>" +cartProductData);
+                console.log("cartProductData ----.>>>>>" + cartProductData);
                 if (cartProductData) {
                     cartProducts.push({ cartProduct: product, qty: cartProductData.qty });
                 }
