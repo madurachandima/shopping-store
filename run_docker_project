@@ -29,3 +29,14 @@ docker-compose -f docker-compose.dev.yml build --no-cache  # Rebuild the image
 docker-compose -f docker-compose.dev.yml up  # Start fresh
 
 
+# how to install new node js dependancy inside the docker container 
+// shopping_store is my container name
+
+docker exec -it shopping_store sh
+
+npm install --save sequelize
+
+docker-compose up --build # this only run the node container
+
+# to run the full project use
+docker-compose -f docker-compose.dev.yml up
