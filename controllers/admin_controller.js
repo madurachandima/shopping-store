@@ -79,7 +79,7 @@ const postEditProduct = (req, res, next) => {
     .then((result) => {
       console.log(result);
       if (result[0] === 1) {
-        console.log("Product updated successfully");
+        console.log("");
         return res.redirect("/admin/products");
       }
       return res.redirect("/");
@@ -107,15 +107,21 @@ const getProducts = (req, res, next) => {
 const deleteProductById = (req, res, next) => {
   const prodId = req.body.productId;
 
-  Product.findById(prodId, (product) => {
-    if (!product) {
+  Product.destroy({
+    where: {
+      id: prodId,
+    },
+  })
+    .then((result) => {
+      if (result[0] === 1) {
+        console.log("Product deleted successfully");
+      }
       return res.redirect("/admin/products");
-    }
-
-    Product.deleteById(prodId, (response) => {
-      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.redirect("/admin/products");
     });
-  });
 };
 
 const deleteCartProductById = (req, res, next) => {
