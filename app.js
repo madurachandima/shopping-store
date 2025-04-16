@@ -15,6 +15,7 @@ import { Product } from "./models/product.js";
 import { User } from "./models/user.js";
 import { Cart } from "./models/cart.js";
 import { CartItem } from "./models/cart-item.js";
+import { on } from "events";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,7 +47,11 @@ app.use(shopRoutes);
 
 app.use(pageNotFound);
 
-Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+Product.belongsTo(User, {
+  constraints: true,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 User.hasMany(Product);
 
 User.hasOne(Cart);
@@ -56,8 +61,8 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-    // .sync({force: true})
-   .sync()
+  //  .sync({force: true})
+  .sync()
   .then((result) => {
     return User.findByPk(1);
   })
@@ -69,6 +74,11 @@ sequelize
   })
   .then((user) => {
     console.log(user);
+
+    return user.createCart();
+  })
+  .then((cart) => {
+    console.log(cart);
     app.listen(3000);
   })
   .catch((err) => {

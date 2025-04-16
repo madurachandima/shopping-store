@@ -1,6 +1,5 @@
 import { where } from "sequelize";
 import { Product } from "../models/product.js";
-import e from "express";
 
 const getAddProduct = (req, res, next) => {
   res.render("admin/admin-edit-product", {
@@ -31,8 +30,6 @@ const postAddProduct = (req, res, next) => {
       console.log(err);
     });
 
-  // const product = new Product(null, title, imageUrl, description, price);
-  // product.save().then((result) => { res.redirect("/shop/products",); }).catch(error => console.log(error));
 };
 
 const getEditProductById = (req, res, next) => {
