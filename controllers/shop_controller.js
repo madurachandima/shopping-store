@@ -144,6 +144,41 @@ const postCartDeleteProduct = (req, res, next) => {
     });
 };
 
+const postOrder = (req, res, next) => {
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then((cart) => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    })
+    .then((products) => {
+      console.log(products);
+      return req.user
+        .createOrder()
+        .then((order) => {
+          return order.addProducts(
+            products.map((product) => {
+              product.orderItem = { quantity: product.cartItem.quantity };
+              return product;
+            })
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .then((result) => {
+      return fetchedCart.setProducts(null);
+    })
+    .then((result) => {
+      res.redirect("/shop/orders");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export {
   getProducts,
   getIndex,
@@ -153,4 +188,5 @@ export {
   getProductByProductId,
   postCart,
   postCartDeleteProduct,
+  postOrder,
 };
