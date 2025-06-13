@@ -15,13 +15,10 @@ const postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  req.user
-    .createProduct({
-      title: title,
-      price: price,
-      imageUrl: imageUrl,
-      description: description,
-    })
+  const product = new Product(title, price, imageUrl, description);
+ 
+  product
+    .save()
     .then((result) => {
       console.log(result);
       res.redirect("/shop/products");
@@ -29,7 +26,6 @@ const postAddProduct = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-
 };
 
 const getEditProductById = (req, res, next) => {
