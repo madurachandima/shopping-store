@@ -1,5 +1,5 @@
-import { where } from "sequelize";
 import { Product } from "../models/product.js";
+
 
 const getAddProduct = (req, res, next) => {
   res.render("admin/admin-edit-product", {
@@ -16,7 +16,7 @@ const postAddProduct = (req, res, next) => {
   const description = req.body.description;
 
   const product = new Product(title, price, imageUrl, description);
- 
+
   product
     .save()
     .then((result) => {
@@ -36,15 +36,13 @@ const getEditProductById = (req, res, next) => {
     return res.redirect("/");
   }
 
-  req.user
-    .getProducts({ where: { id: prodId } })
+  Product.findById(prodId)
     .then((product) => {
-      console.log(product[0]["dataValues"]);
       if (!product) {
         return res.redirect("/");
       }
       res.render("admin/admin-edit-product", {
-        product: product[0]["dataValues"],
+        product: product,
         pageTitle: "Edit Product",
         path: "/admin/edit-product",
         editing: editMode,
@@ -62,19 +60,14 @@ const postEditProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  Product.update(
-    {
-      title: title,
-      price: price,
-      imageUrl: imageUrl,
-      description: description,
-    },
-    { where: { id: id } }
-  )
+  const product = new Product(title, price, imageUrl, description, id);
+
+  product
+    .save()
     .then((result) => {
-      console.log(result);
-      if (result[0] === 1) {
-        console.log("");
+      console.log("Product updated ", result);
+      if (result.modifiedCount >= 1) {
+        console.log("Product updated successfully");
         return res.redirect("/admin/products");
       }
       return res.redirect("/");
@@ -86,8 +79,7 @@ const postEditProduct = (req, res, next) => {
 };
 
 const getProducts = (req, res, next) => {
-  req.user
-    .getProducts()
+  Product.fetchAll()
     .then((products) => {
       res.render("admin/admin-product-list", {
         prods: products,
@@ -103,12 +95,9 @@ const getProducts = (req, res, next) => {
 const deleteProductById = (req, res, next) => {
   const prodId = req.body.productId;
 
-  Product.destroy({
-    where: {
-      id: prodId,
-    },
-  })
+  Product.deleteById(prodId)
     .then((result) => {
+      console.log("Product deleted ", result);
       if (result[0] === 1) {
         console.log("Product deleted successfully");
       }

@@ -1,26 +1,26 @@
 import express from "express";
 
 import {
-   getAddProduct,
+  getAddProduct,
   postAddProduct,
-//   getProducts,
-//   getEditProductById,
-//   postEditProduct,
-//   deleteProductById,
+  getProducts,
+  getEditProductById,
+  postEditProduct,
+  deleteProductById,
 } from "../controllers/admin_controller.js";
 
 const router = express.Router();
 
- router.get("/add-product", getAddProduct);
+router.get("/add-product", getAddProduct);
 
-// router.get("/products", getProducts);
+router.get("/products", getProducts);
 
-// router.get("/edit-product/:productId", getEditProductById);
+router.get("/edit-product/:productId", getEditProductById);
 
-// router.post("/delete-product", deleteProductById)
+router.post("/delete-product", deleteProductById);
 
 router.post("/add-product", postAddProduct);
 
-// router.post("/edit-product", postEditProduct)
+router.post("/edit-product", postEditProduct);
 
 export { router };

@@ -1,8 +1,8 @@
 import { Product } from "../models/product.js";
-import { Cart } from "../models/cart.js";
+// import { Cart } from "../models/cart.js";
 
 const getProducts = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/product_list", {
         prods: products,
@@ -17,11 +17,10 @@ const getProducts = (req, res, next) => {
 
 const getProductByProductId = (req, res, next) => {
   const prodId = req.params.productId;
-
-  Product.findAll({ where: { id: prodId } })
+  Product.findById(prodId)
     .then((product) => {
       res.render("shop/product-details", {
-        product: product[0]["dataValues"],
+        product: product,
         pageTitle: "Product Details",
         path: "/shop/products",
       });
@@ -32,7 +31,7 @@ const getProductByProductId = (req, res, next) => {
 };
 
 const getIndex = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/index", {
         prods: products,

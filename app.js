@@ -5,7 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { router as adminRoutes } from "./routes/admin.js";
-// import { router as shopRoutes } from "./routes/shop.js";
+import { router as shopRoutes } from "./routes/shop.js";
 
 import { pageNotFound } from "./controllers/error_controller.js";
 import { mongoConnect } from "./utils/database.js";
@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/admin", adminRoutes);
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 app.use(pageNotFound);
 
