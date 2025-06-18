@@ -20,13 +20,13 @@ router.get("/shop/products", getProducts);
 
  router.get("/shop/product/:productId", getProductByProductId);
 
-// router.get("/shop/cart", getCart);
+router.get("/shop/cart", getCart);
 
 // router.get("/shop/checkout", getCheckOut);
 
 // router.get("/shop/orders", getOrders);
 
-// router.post("/shop/cart", postCart);
+router.post("/shop/cart", postCart);
 
 // router.post("/shop/cart-delete-item", postCartDeleteProduct);
 
