@@ -1,5 +1,4 @@
 import { Product } from "../models/product.js";
-// import { Cart } from "../models/cart.js";
 
 const getProducts = (req, res, next) => {
   Product.fetchAll()
@@ -67,7 +66,19 @@ const getCheckOut = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
-  res.render("shop/orders", { pageTitle: "Your Orders", path: "/shop/orders" });
+  req.user
+    .getOrders()
+    .then((orders) => {
+      console.log("Orders fetched:", orders);
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/shop/orders",
+        orders: orders,
+      });
+    })
+    .catch((err) => {
+      console.log("Error in getOrders:", err);
+    });
 };
 
 const postCart = (req, res, next) => {
@@ -91,53 +102,22 @@ const postCart = (req, res, next) => {
 
 const postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  req.user.deleteCartItemById(prodId).
 
-  // req.user
-  //   .getCart()
-  //   .then((cart) => {
-  //     return cart.getProducts({ where: { id: prodId } });
-  //   })
-  //   .then((products) => {
-  //     const product = products[0];
-  //     return product.cartItem.destroy();
-  //   })
-  //   .then(() => {
-  //     res.redirect("/shop/cart");
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
+  req.user
+    .deleteCartItemById(prodId)
+    .then((result) => {
+      res.redirect("/shop/cart");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then((products) => {
-      console.log(products);
-      return req.user
-        .createOrder()
-        .then((order) => {
-          return order.addProducts(
-            products.map((product) => {
-              product.orderItem = { quantity: product.cartItem.quantity };
-              return product;
-            })
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
+    .addOrder()
     .then((result) => {
-      return fetchedCart.setProducts(null);
-    })
-    .then((result) => {
+      console.log("Order added:", result);
       res.redirect("/shop/orders");
     })
     .catch((err) => {

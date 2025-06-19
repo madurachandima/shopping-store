@@ -1,3 +1,4 @@
+import e from "express";
 import { getCart } from "../controllers/shop_controller.js";
 import { getDb } from "../utils/database.js";
 import { ObjectId } from "mongodb";
@@ -104,8 +105,72 @@ class User {
       });
   }
 
-  deleteCartItemById(productId){
+  deleteCartItemById(productId) {
+    const updatedCartItems = this.cart.items.filter(
+      (item) => item.productId.toString() !== productId.toString()
+    );
 
+    const db = getDb();
+    return db.collection("users").updateOne(
+      {
+        _id: this._id,
+      },
+      {
+        $set: {
+          cart: {
+            items: updatedCartItems,
+          },
+        },
+      }
+    );
+  }
+
+  addOrder() {
+    const db = getDb();
+    return this.getCart()
+      .then((products) => {
+        const order = {
+          items: products,
+          user: {
+            _id: this._id,
+            name: this.name,
+            email: this.email,
+          },
+        };
+        return db.collection("orders").insertOne(order);
+      })
+      .then((result) => {
+        console.log("Order added:", result);
+        this.cart = { items: [] };
+        return db.collection("users").updateOne(
+          {
+            _id: this._id,
+          },
+          {
+            $set: { cart: { items: [] } },
+          }
+        );
+      })
+      .then((result) => {
+        console.log("Cart cleared after order");
+        return result;
+      });
+  }
+
+  getOrders() {
+    const db = getDb();
+    return db
+      .collection("orders")
+      .find({ "user._id": this._id })
+      .toArray()
+      .then((orders) => {
+        console.log("Orders found:", orders);
+        return orders;
+      })
+      .catch((err) => {
+        console.error("Error fetching orders:", err);
+        throw err;
+      });
   }
 }
 
