@@ -98,6 +98,11 @@ const postEditProduct = (req, res, next) => {
 
 const getProducts = (req, res, next) => {
   Product.find()
+    // .select("title price imageUrl description userId")
+    // select only the fields we need
+    //.populate("userId")
+    // get the user details associated with the product using userId
+    //populate("userId","name email") // if you want to select specific fields from the user
     .then((products) => {
       res.render("admin/admin-product-list", {
         prods: products,
