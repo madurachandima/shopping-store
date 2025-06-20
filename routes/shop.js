@@ -28,7 +28,7 @@ router.get("/shop/product/:productId", getProductByProductId);
 
 router.post("/shop/cart", postCart);
 
-// router.post("/shop/cart-delete-item", postCartDeleteProduct);
+ router.post("/shop/cart-delete-item", postCartDeleteProduct);
 
 // router.post("/shop/create-order", postOrder);
 
