@@ -1,114 +1,137 @@
-import { getDb } from "../utils/database.js";
-import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-class Product {
-  constructor(title, price, imageUrl, description, id, userId) {
-    this.title = title;
-    this.price = price;
-    this.imageUrl = imageUrl;
-    this.description = description;
-    this._id = id ? new ObjectId(id) : null;
-    this.userId = userId;
-  }
-  save() {
-    const db = getDb();
-    let dbOp;
+const productSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
 
-    if (this._id) {
-      dbOp = db
-        .collection("products")
-        .updateOne({ _id: this._id }, { $set: this });
-    } else {
-      dbOp = db.collection("products").insertOne(this);
-    }
+export const Product = mongoose.model("Product", productSchema);
 
-    return dbOp
-      .then((result) => {
-        console.log("Product inserted:", result);
-        return result;
-      })
-      .catch((err) => {
-        console.error("Error inserting product:", err);
-        throw err;
-      });
-  }
+// import { ObjectId } from "mongodb";
 
-  static fetchAll() {
-    const db = getDb();
-    return db
-      .collection("products")
-      .find()
-      .toArray()
-      .then((products) => {
-        console.log("Products fetched:", products);
-        return products;
-      })
-      .catch((err) => {
-        console.error("Error fetching products:", err);
-      });
-  }
+// class Product {
+//   constructor(title, price, imageUrl, description, id, userId) {
+//     this.title = title;
+//     this.price = price;
+//     this.imageUrl = imageUrl;
+//     this.description = description;
+//     this._id = id ? new ObjectId(id) : null;
+//     this.userId = userId;
+//   }
+//   save() {
+//     const db = getDb();
+//     let dbOp;
 
-  static findById(prodId) {
-    if (!ObjectId.isValid(prodId)) {
-      console.error("Invalid product ID:", prodId);
-      return Promise.reject(new Error("Invalid product ID"));
-    }
-    const db = getDb();
-    return db
-      .collection("products")
-      .findOne({ _id: new ObjectId(prodId) })
+//     if (this._id) {
+//       dbOp = db
+//         .collection("products")
+//         .updateOne({ _id: this._id }, { $set: this });
+//     } else {
+//       dbOp = db.collection("products").insertOne(this);
+//     }
 
-      .then((product) => {
-        console.log("Product found:", product);
-        return product;
-      })
-      .catch((err) => {
-        console.error("Error finding product:", err);
-      });
-  }
+//     return dbOp
+//       .then((result) => {
+//         console.log("Product inserted:", result);
+//         return result;
+//       })
+//       .catch((err) => {
+//         console.error("Error inserting product:", err);
+//         throw err;
+//       });
+//   }
 
-  static deleteById(prodId) {
-    if (!ObjectId.isValid(prodId)) {
-      console.error("Invalid product ID:", prodId);
-      return Promise.reject(new Error("Invalid product ID"));
-    }
-    const db = getDb();
-    return db
-      .collection("products")
-      .deleteOne({ _id: new ObjectId(prodId) })
-      .then((result) => {
-        console.log("Product deleted:", result);
-        return result;
-      })
-      .catch((err) => {
-        console.error("Error deleting product:", err);
-        throw err;
-      });
-  }
-}
+//   static fetchAll() {
+//     const db = getDb();
+//     return db
+//       .collection("products")
+//       .find()
+//       .toArray()
+//       .then((products) => {
+//         console.log("Products fetched:", products);
+//         return products;
+//       })
+//       .catch((err) => {
+//         console.error("Error fetching products:", err);
+//       });
+//   }
 
-export { Product };
+//   static findById(prodId) {
+//     if (!ObjectId.isValid(prodId)) {
+//       console.error("Invalid product ID:", prodId);
+//       return Promise.reject(new Error("Invalid product ID"));
+//     }
+//     const db = getDb();
+//     return db
+//       .collection("products")
+//       .findOne({ _id: new ObjectId(prodId) })
 
-// const Product = sequelize.define("product", {
-//   id: {
-//     type: Sequelize.INTEGER,
-//     autoIncrement: true,
-//     allowNull: false,
-//     primaryKey: true,
-//   },
-//   title: Sequelize.STRING,
-//   price: {
-//     type: Sequelize.DOUBLE,
-//     allowNull: false,
-//   },
-//   imageUrl: {
-//     type: Sequelize.TEXT,
-//     allowNull: false,
-//   },
-//   description: {
-//     type: Sequelize.TEXT,
-//     allowNull: false,
-//   },
-// });
+//       .then((product) => {
+//         console.log("Product found:", product);
+//         return product;
+//       })
+//       .catch((err) => {
+//         console.error("Error finding product:", err);
+//       });
+//   }
+
+//   static deleteById(prodId) {
+//     if (!ObjectId.isValid(prodId)) {
+//       console.error("Invalid product ID:", prodId);
+//       return Promise.reject(new Error("Invalid product ID"));
+//     }
+//     const db = getDb();
+//     return db
+//       .collection("products")
+//       .deleteOne({ _id: new ObjectId(prodId) })
+//       .then((result) => {
+//         console.log("Product deleted:", result);
+//         return result;
+//       })
+//       .catch((err) => {
+//         console.error("Error deleting product:", err);
+//         throw err;
+//       });
+//   }
+// }
 
 // export { Product };
+
+// // const Product = sequelize.define("product", {
+// //   id: {
+// //     type: Sequelize.INTEGER,
+// //     autoIncrement: true,
+// //     allowNull: false,
+// //     primaryKey: true,
+// //   },
+// //   title: Sequelize.STRING,
+// //   price: {
+// //     type: Sequelize.DOUBLE,
+// //     allowNull: false,
+// //   },
+// //   imageUrl: {
+// //     type: Sequelize.TEXT,
+// //     allowNull: false,
+// //   },
+// //   description: {
+// //     type: Sequelize.TEXT,
+// //     allowNull: false,
+// //   },
+// // });
+
+//  export { Product };

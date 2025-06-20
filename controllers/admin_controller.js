@@ -1,5 +1,5 @@
 import { Product } from "../models/product.js";
-
+import mongoose from "mongoose";
 
 const getAddProduct = (req, res, next) => {
   res.render("admin/admin-edit-product", {
@@ -15,7 +15,12 @@ const postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(title, price, imageUrl, description,null,req.user._id);
+  const product = new Product({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description,
+  });
 
   product
     .save()
@@ -60,17 +65,25 @@ const postEditProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(title, price, imageUrl, description, id);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    console.log("Invalid ID format");
+    return res.redirect("/");
+  }
 
-  product
-    .save()
+  Product.findByIdAndUpdate(
+    id,
+    {
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description,
+    },
+    { new: true }
+  )
     .then((result) => {
       console.log("Product updated ", result);
-      if (result.modifiedCount >= 1) {
-        console.log("Product updated successfully");
-        return res.redirect("/admin/products");
-      }
-      return res.redirect("/");
+      console.log("Product updated successfully");
+      return res.redirect("/admin/products");
     })
     .catch((err) => {
       console.log(err);
@@ -79,7 +92,7 @@ const postEditProduct = (req, res, next) => {
 };
 
 const getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("admin/admin-product-list", {
         prods: products,
@@ -95,11 +108,11 @@ const getProducts = (req, res, next) => {
 const deleteProductById = (req, res, next) => {
   const prodId = req.body.productId;
 
-  Product.deleteById(prodId)
+  Product.findByIdAndDelete(prodId)
     .then((result) => {
       console.log("Product deleted ", result);
-      if (result[0] === 1) {
-        console.log("Product deleted successfully");
+      if (!result) {
+        console.log("No product found with the given ID");
       }
       return res.redirect("/admin/products");
     })
