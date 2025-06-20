@@ -1,3 +1,32 @@
+import mongoose, { Schema } from "mongoose";
+
+const UserSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  cart: {
+    items: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+  },
+});
+export const User = mongoose.model("User", UserSchema);
+
 // import e from "express";
 // import { getCart } from "../controllers/shop_controller.js";
 // import { ObjectId } from "mongodb";

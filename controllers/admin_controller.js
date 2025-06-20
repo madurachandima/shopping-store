@@ -20,6 +20,11 @@ const postAddProduct = (req, res, next) => {
     price: price,
     imageUrl: imageUrl,
     description: description,
+    userId: req.user,
+    /* 
+    Assuming req.user is populated with 
+    the user object and it only take the user ID
+    */
   });
 
   product
