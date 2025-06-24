@@ -1,4 +1,5 @@
 import { Product } from "../models/product.js";
+import { Order } from "../models/order.js";
 
 const getProducts = (req, res, next) => {
   Product.find()
@@ -50,7 +51,7 @@ const getCart = (req, res, next) => {
     .populate("cart.items.productId")
     .then((user) => {
       console.log("Cart products fetched:", user.cart.items);
-      const products =  user.cart.items;
+      const products = user.cart.items;
       res.render("shop/cart", {
         prods: products,
         pageTitle: "Your Cart",
@@ -70,8 +71,7 @@ const getCheckOut = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  Order.find({ "user.userId": req.user._id })
     .then((orders) => {
       console.log("Orders fetched:", orders);
       res.render("shop/orders", {
@@ -119,9 +119,30 @@ const postCartDeleteProduct = (req, res, next) => {
 
 const postOrder = (req, res, next) => {
   req.user
-    .addOrder()
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((item) => {
+        return {
+          // get the product data from the populated productId
+          productData: { ...item.productId._doc },
+          quantity: item.quantity,
+        };
+      });
+
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user._id,
+        },
+        products: products,
+      });
+      return order.save();
+    })
     .then((result) => {
       console.log("Order added:", result);
+      return req.user.clearCart();
+    })
+    .then(() => {
       res.redirect("/shop/orders");
     })
     .catch((err) => {
