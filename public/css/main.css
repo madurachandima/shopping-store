@@ -41,8 +41,10 @@ height: 20rem;
 
 .main-header__nav {
   height: 100%;
-  display: none;
+  width: 100%;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .main-header__item-list {
@@ -61,12 +63,26 @@ height: 20rem;
   text-decoration: none;
   color: white;
 }
+.main-header__item button {
+  font: inherit;
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
 
 .main-header__item a:hover,
 .main-header__item a:active,
 .main-header__item a.active {
   color: #ffeb3b;
 }
+
+.main-header__item button:hover,
+.main-header__item button:active {
+  color: #ffeb3b;
+}
+
 
 .mobile-nav {
   width: 30rem;

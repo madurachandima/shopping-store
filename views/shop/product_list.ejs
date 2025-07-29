@@ -28,10 +28,14 @@
                                         <%= product.description %>
                                     </p>
                                 </div>
+                           
                                 <div class="card__actions">
                                     <a href="/shop/product/<%= product._id %>" class="btn">Details</a>
+                                    <% if(isAuthenticated) { %>
                                     <%- include('../includes/add-to-cart-btn.ejs',{product:product}) %>
+                                    <%}%>
                                 </div>
+                           
                             </article>
                             <%}%>
                     </div>

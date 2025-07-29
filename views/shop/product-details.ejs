@@ -18,6 +18,8 @@
                 <h2>
                     <%=product.description %>
                 </h2>
+                <% if(isAuthenticated) { %>
                 <%- include('../includes/add-to-cart-btn.ejs',{product:product}) %>
+                <%}%>
             </main>
             <%- include('../includes/end.ejs') %>
