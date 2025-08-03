@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 const UserSchema = new Schema({
-  name: {
+  email: {
     type: String,
     required: true,
   },
-  email: {
+  password: {
     type: String,
     required: true,
   },
@@ -59,7 +59,7 @@ UserSchema.methods.removeItemFromCart = function (productId) {
   );
 
   this.cart.items = updatedCartItems;
-  
+
   return this.save();
 };
 
