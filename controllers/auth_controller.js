@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+
 import { User } from "../models/user.js";
 
 const getLogin = (req, res, next) => {
@@ -46,7 +48,14 @@ const postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
-  console.log("call signup email ", email, "password ", password, "con pw" , confirmPassword);
+  console.log(
+    "call signup email ",
+    email,
+    "password ",
+    password,
+    "con pw",
+    confirmPassword
+  );
 
   if (!email || !password) {
     return res.redirect("/auth/signup");
@@ -56,7 +65,7 @@ const postSignup = (req, res, next) => {
     // req.flash("error", "Passwords do not match");
     return res.redirect("/auth/signup");
   }
-  
+
   User.findOne({ email: email })
     .then((userDoc) => {
       if (userDoc) {
@@ -64,9 +73,12 @@ const postSignup = (req, res, next) => {
         console.log("Email already exists");
         return res.redirect("/auth/signup");
       }
+      return bcrypt.hash(password, 12);
+    })
+    .then((hashedPassword) => {
       const user = new User({
         email: email,
-        password: password,
+        password: hashedPassword,
         cart: { items: [] },
       });
       console.log("new user creste --------->>>>>>>>>>>>>>>.. ");
