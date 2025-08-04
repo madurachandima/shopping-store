@@ -4,6 +4,7 @@ import path from "path";
 import mongoose from "mongoose";
 import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
+import csurf from "csurf";
 
 import { fileURLToPath } from "url";
 
@@ -29,6 +30,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+const csrfProtection = csurf();
+
 app.set("view engine", "ejs");
 // if we rename views filter to "screens" this should be change like this
 // app.set('views','screens')
@@ -47,6 +50,8 @@ app.use(
   })
 );
 
+app.use(csrfProtection);
+
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -59,6 +64,12 @@ app.use((req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use("/admin", adminRoutes);

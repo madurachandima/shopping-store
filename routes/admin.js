@@ -9,18 +9,20 @@ import {
   deleteProductById,
 } from "../controllers/admin_controller.js";
 
+import { isAuth } from "../middleware/is_auth.js";
+
 const router = express.Router();
 
-router.get("/add-product", getAddProduct);
+router.get("/add-product", isAuth, getAddProduct);
 
-router.get("/products", getProducts);
+router.get("/products", isAuth, getProducts);
 
-router.get("/edit-product/:productId", getEditProductById);
+router.get("/edit-product/:productId", isAuth, getEditProductById);
 
-router.post("/delete-product", deleteProductById);
+router.post("/delete-product", isAuth, deleteProductById);
 
-router.post("/add-product", postAddProduct);
+router.post("/add-product", isAuth, postAddProduct);
 
-router.post("/edit-product", postEditProduct);
+router.post("/edit-product", isAuth, postEditProduct);
 
 export { router };

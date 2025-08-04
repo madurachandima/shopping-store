@@ -130,10 +130,12 @@ const postOrder = (req, res, next) => {
       const products = user.cart.items.map((i) => {
         return { quantity: i.quantity, product: { ...i.productId._doc } };
       });
+
+      console.log("Products to be ordered:", products);
       const order = new Order({
         user: {
-          name: req.user.name,
-          userId: re.user,
+          email: req.user.email,
+          userId: req.user,
         },
         products: products,
       });

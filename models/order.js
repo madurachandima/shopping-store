@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const OrderSchema = new Schema({
   products: [
     {
-      productData: {
+      product: {
         type: Object,
         required: true,
       },
@@ -14,7 +14,7 @@ const OrderSchema = new Schema({
     },
   ],
   user: {
-    name: {
+    email: {
       type: String,
       required: true,
     },
