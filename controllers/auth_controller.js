@@ -7,7 +7,7 @@ const getLogin = (req, res, next) => {
     pageTitle: "Login",
     path: "/login",
     editing: false,
-    isAuthenticated: req.isLoggedIn,
+    errorMessage: req.flash("error"),
   });
 };
 
@@ -18,6 +18,7 @@ const postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
+        req.flash("error", "Invalid email or password");
         return res.redirect("/auth/login");
       }
       bcrypt
@@ -58,7 +59,6 @@ const getSignup = (req, res, next) => {
     pageTitle: "Signup",
     path: "/signup",
     editing: false,
-    isAuthenticated: req.isLoggedIn,
   });
 };
 

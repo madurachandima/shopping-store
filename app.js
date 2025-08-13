@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
 import csurf from "csurf";
+import flash from "connect-flash";
 
 import { fileURLToPath } from "url";
 
@@ -51,6 +52,7 @@ app.use(
 );
 
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
