@@ -1,19 +1,40 @@
 import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
+import nodemailerSendgrid from "nodemailer-sendgrid-transport";
 
 import { User } from "../models/user.js";
 
+const transporter = nodemailer.createTransport(
+  nodemailerSendgrid({
+    auth: {
+      api_key:
+        "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",
+    },
+  })
+);
+
 const getLogin = (req, res, next) => {
+  let error = req.flash("error");
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
   res.render("auth/login", {
     pageTitle: "Login",
     path: "/login",
     editing: false,
-    errorMessage: req.flash("error"),
+    errorMessage: error,
   });
 };
 
 const postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  if (!email || !password) {
+    req.flash("error", "Email and Password are required");
+    return res.redirect("/auth/login");
+  }
 
   User.findOne({ email: email })
     .then((user) => {
@@ -55,10 +76,17 @@ const postLogout = (req, res, next) => {
 };
 
 const getSignup = (req, res, next) => {
+  let error = req.flash("error");
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
   res.render("auth/signup", {
     pageTitle: "Signup",
     path: "/signup",
     editing: false,
+    errorMessage: error,
   });
 };
 
@@ -68,19 +96,19 @@ const postSignup = (req, res, next) => {
   const confirmPassword = req.body.confirmPassword;
 
   if (!email || !password) {
+    req.flash("error", "Email and Password are required");
     return res.redirect("/auth/signup");
   }
 
   if (password !== confirmPassword) {
-    // req.flash("error", "Passwords do not match");
+    req.flash("error", "Passwords do not match");
     return res.redirect("/auth/signup");
   }
 
   User.findOne({ email: email })
     .then((userDoc) => {
       if (userDoc) {
-        // req.flash("error", "Email already exists");
-        console.log("Email already exists");
+        req.flash("error", "Email already exists");
         return res.redirect("/auth/signup");
       }
       return bcrypt
@@ -95,26 +123,19 @@ const postSignup = (req, res, next) => {
           return user.save();
         })
         .then(() => {
+          return transporter.sendMail({
+            to: "madurachandima6@gmail.com",
+            from: "wkmaduradias@gmail.com",
+            subject: "Signup succeeded!",
+            html: "<h1>You successfully signed up!</h1>",
+          });
+        })
+        .then(() => {
           res.redirect("/auth/login");
         });
     })
     .catch((err) => {
       console.log(err);
     });
-
-  // User.findById("6854e55be6464edb37a50cff")
-  //   .then((user) => {
-  //     // req.session.isLoggedIn = true;
-  //     // req.session.user = user;
-  //     // req.session.save((err) => {
-  //     //   if (err) {
-  //     //     console.log(err);
-  //     //   }
-  //     //   res.redirect("/");
-  //     // });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
 };
 export { getLogin, postLogin, postLogout, getSignup, postSignup };
