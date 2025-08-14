@@ -46,7 +46,7 @@ const getEditProductById = (req, res, next) => {
     return res.redirect("/");
   }
 
-  Product.findById(prodId)
+  Product.findOne({ _id: prodId, userId: req.user._id })
     .then((product) => {
       if (!product) {
         return res.redirect("/");
@@ -56,7 +56,6 @@ const getEditProductById = (req, res, next) => {
         pageTitle: "Edit Product",
         path: "/admin/edit-product",
         editing: editMode,
-    
       });
     })
     .catch((err) => {
@@ -76,8 +75,8 @@ const postEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
 
-  Product.findByIdAndUpdate(
-    id,
+  Product.findOneAndUpdate(
+    { _id: id, userId: req.user._id },
     {
       title: title,
       price: price,
@@ -98,7 +97,7 @@ const postEditProduct = (req, res, next) => {
 };
 
 const getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // .select("title price imageUrl description userId")
     // select only the fields we need
     //.populate("userId")
@@ -119,11 +118,13 @@ const getProducts = (req, res, next) => {
 const deleteProductById = (req, res, next) => {
   const prodId = req.body.productId;
 
-  Product.findByIdAndDelete(prodId)
+  Product.findOneAndDelete({ _id: prodId, userId: req.user._id })
     .then((result) => {
       console.log("Product deleted ", result);
+
       if (!result) {
         console.log("No product found with the given ID");
+        return res.redirect("/");
       }
       return res.redirect("/admin/products");
     })
