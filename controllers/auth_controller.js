@@ -2,9 +2,9 @@ import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import nodemailerSendgrid from "nodemailer-sendgrid-transport";
 import crypto from "crypto";
+import { validationResult } from "express-validator";
 
 import { User } from "../models/user.js";
-import { error } from "console";
 
 const transporter = nodemailer.createTransport(
   nodemailerSendgrid({
@@ -97,6 +97,16 @@ const postSignup = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.status(422).res.render("auth/signup", {
+      pageTitle: "Signup",
+      path: "/signup",
+      editing: false,
+      errorMessage: error.array()[0].msg,
+    });
+  }
+
   if (!email || !password) {
     req.flash("error", "Email and Password are required");
     return res.redirect("/auth/signup");
@@ -107,35 +117,25 @@ const postSignup = (req, res, next) => {
     return res.redirect("/auth/signup");
   }
 
-  User.findOne({ email: email })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash("error", "Email already exists");
-        return res.redirect("/auth/signup");
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
 
-          return user.save();
-        })
-        .then(() => {
-          res.redirect("/auth/login");
-          transporter.sendMail({
-            to: email,
-            from: "shop@node.com",
-            subject: "Signup succeeded!",
-            html: "<h1>You successfully signed up!</h1>",
-          });
-        });
+      return user.save();
     })
-    .catch((err) => {
-      console.log(err);
+    .then(() => {
+      res.redirect("/auth/login");
+      transporter.sendMail({
+        to: email,
+        from: "shop@node.com",
+        subject: "Signup succeeded!",
+        html: "<h1>You successfully signed up!</h1>",
+      });
     });
 };
 

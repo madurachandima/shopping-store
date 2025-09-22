@@ -5,4 +5,11 @@ const pageNotFound = (req, res, next) => {
   });
 };
 
-export { pageNotFound };
+const somethingWring = (req, res, next) => {
+  res.status(500).render("500", {
+    pageTitle: "Something Went Wrong",
+    path: "/500",
+  });
+};
+
+export { pageNotFound, somethingWring };

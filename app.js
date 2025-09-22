@@ -7,14 +7,17 @@ import connectMongoDBSession from "connect-mongodb-session";
 import csurf from "csurf";
 import flash from "connect-flash";
 
-
 import { fileURLToPath } from "url";
 
 import { router as adminRoutes } from "./routes/admin.js";
 import { router as shopRoutes } from "./routes/shop.js";
 import { router as authRoutes } from "./routes/auth.js";
 
-import { pageNotFound } from "./controllers/error_controller.js";
+import {
+  pageNotFound,
+  somethingWring,
+} from "./controllers/error_controller.js";
+
 import { User } from "./models/user.js";
 
 const MONGODB_URI =
@@ -61,11 +64,14 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      if (!user) {
+        return next();
+      }
       req.user = user;
       next();
     })
     .catch((err) => {
-      console.log(err);
+      throw new Error(err);
     });
 });
 
@@ -78,7 +84,14 @@ app.use((req, res, next) => {
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use("/auth", authRoutes);
+
+app.get("/500", somethingWring);
+
 app.use(pageNotFound);
+
+app.use((error, req, res, next) => {
+  res.redirect("/500");
+});
 
 mongoose
   .connect(MONGODB_URI)
